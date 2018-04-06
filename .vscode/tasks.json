@@ -1,0 +1,26 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "echo",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-g",
+                "-Wall",
+                "${workspaceRoot}/ecs.cpp",
+                "-I",
+                "${workspaceRoot}/lib"
+                // "${workspaceRoot}/data_2015_12.txt",
+                // "${workspaceRoot}/input.txt",
+                // "${workspaceRoot}/output.txt"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}

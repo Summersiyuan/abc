@@ -1,0 +1,69 @@
+版本version1.0  
+author:summersiyuan
+Data:2018/3/18
+
+DAY:3/17
+新增以下函数:
+//extern char **read_file_line(char ** const buff, const unsigned int spec, const char * const filename);
+//读取文件每行信息 输入buff缓存区 最大数据条数 文件路径
+//输出每行信息
+
+extern char **get_train_flavor(char ** const buff, int data_num);
+//获取train文件的虚拟机类型
+extern char **get_train_timestamp(char ** const buff, int data_num);
+//获取train文件的时间戳
+
+unsigned int get_CPUcore_num(char ** const buff);
+//获取CPU内核数
+unsigned int get_RAM(char ** const buff);
+//获取内存大小
+unsigned int get_DISK(char ** const buff);
+//获取硬盘容量
+unsigned int get_input_flavornum(char ** const buff);
+//获取虚拟机数量
+unsigned int get_opt_type(char ** const buff);
+//获取优化选项;  True:CPU  FALSE:MEM
+
+待解决问题:
+unsigned int get_opt_type(char ** const buff);
+//获取优化选项;  True:CPU  FALSE:MEM
+extern char **get_input_flavor(char ** const buff, int data_num);
+//获取input文件的虚拟机类型
+extern char **get_input_timestamp(char ** const buff, int data_num);
+//获取input文件的时间戳
+
+DAY:3/18
+新增以下函数:
+oid  **get_train_flavor(char ** const buff, char ** const t_flavor, int data_num);
+//获取train文件的虚拟机类型
+void **get_train_timestamp(char ** const buff, char ** const t_flavor,int data_num);
+//获取train文件的时间戳
+
+unsigned int get_CPUcore_num(char ** const buff);
+//获取CPU内核数
+unsigned int get_RAM(char ** const buff);
+//获取内存大小
+unsigned int get_DISK(char ** const buff);
+//获取硬盘容量
+unsigned int get_input_flavornum(char ** const buff);
+//获取虚拟机数量
+unsigned int get_opt_type(char ** const buff);
+//获取优化选项;  True:CPU  FALSE:MEM
+void **get_input_flavor(char ** const buff,char ** const i_flavor);
+//获取input文件的虚拟机类型
+void **get_input_fnum(char ** const buff,unsigned int * const i_flavor_num);
+//获取input文件的虚拟机数量
+void **get_input_RAM(char ** const buff,unsigned int * const i_flavor_num);
+//获取input文件的虚拟机内存大小
+void **predict_day(char ** const buff, char ** const i_flavor,int data_num);
+//获取input文件的时间戳
+
+
+修复以下bug:
+unsigned int get_opt_type(char ** const buff);
+//获取优化选项;  True:CPU  FALSE:MEM
+extern char **get_input_flavor(char ** const buff, int data_num);
+//获取input文件的虚拟机类型
+extern char **get_input_timestamp(char ** const buff, int data_num);
+//获取input文件的时间戳
+
