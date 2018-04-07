@@ -1,5 +1,4 @@
 //预测
-
 #include "iostream"
 #include "math.h"
 #include "stdlib.h"
@@ -18,7 +17,7 @@
 
 using namespace std;
 
-#define innode  2       //输入结点数，将输入2个加数
+#define innode  1       //输入结点数，将输入2个加数
 #define hidenode  26    //隐藏结点数，存储“携带位”
 #define outnode  1      //输出结点数，将输出一个预测数字
 #define alpha  0.1      //学习速率
@@ -129,38 +128,28 @@ void RNN::train(int flavortype, int data_size, int batch_size)
 	int a[binary_dim]={0}, b[binary_dim]={0}, c[binary_dim]{0};
 	double e = 0.0;  //误差
 	//printf("ss");
-	int i2t_gap=get_time_gap(t_time_stamp[0], predict_daystamp[1] ); //计算预测结束时间与train文件第一天的间隔
+	int i2t_gap=get_time_gap(t_time_stamp[0], predict_daystamp[0] ); //计算预测结束时间与train文件第一天的间隔
 	printf("%d\n", data_size);	
 	printf("%d\n", i2t_gap);
 	printf("%d\n", i_gap);
-	int rem=(data_size+1)%(batch_size+1);
-	printf("rem=%d\n", rem);
-		for(epoch=1; epoch<ITERATION_NUM+1; epoch++)  //训练次数
-		{
+	//printf("rem=%d\n", rem);
+	for(epoch=1; epoch<ITERATION_NUM+1; epoch++)  //训练次数
+	{
 		//printf("%d\n", batch_size); 
-		    for(l=rem; l<data_size-3*(batch_size+1)+2; l++)
+		    for(l=0; l<t_gap+1; l++)
 			{
 				a_int=0;
-				b_int=0;
 				c_int=0;
                 e=0.0;
                //保存每次生成的预测值
 				memset(predict, 0, sizeof(predict));
 				
-				for(int m=0; m<batch_size+1; m++)
-				a_int += flavornum_day[l+m][flavortype];  //输入-3, -2, -1 的数据
+				a_int = l;  //输入-3, -2, -1 的数据
 				
 				int2binary(a_int, a);                 //转为二进制数
 				
-				for(int m=0; m<batch_size+1; m++)
-				b_int += flavornum_day[l+batch_size+1+m][flavortype];  //输入-2,-1,0 的数据
-				
-				int2binary(b_int, b);                 //转为二进制数
-				
-				for(int m=0; m<batch_size+1; m++)
-					c_int += flavornum_day[l+2*(batch_size+1)+m][flavortype];            //输入-1, 0, 1的数据
-//				printf("%d\n", l);
-//				printf("%d\n", l+2*(batch_size+1)+batch_size+1-1);
+				c_int = flavornum_day[l][flavortype];            //输入-1, 0, 1的数据
+
 				int2binary(c_int, c);                 //转为二进制数
 
 				//printf("%d\n", l);
@@ -181,7 +170,6 @@ void RNN::train(int flavortype, int data_size, int batch_size)
 		    for(p=0; p<binary_dim; p++)           //循环遍历二进制数组，从最低位开始
 		    {
 		        x[0] = a[p];
-		        x[1] = b[p];
 		        double t = (double)c[p];          //实际值
 		        double *in_gate = new double[hidenode];     //输入门
 		        double *out_gate = new double[hidenode];    //输出门
@@ -406,7 +394,6 @@ void RNN::train(int flavortype, int data_size, int batch_size)
 	        cout << "error：" << e << endl;
 	        cout << "y[0]：" << y[0] << endl;
 	        cout << "a：" << a_int << endl;
-	        cout << "b：" << b_int << endl;
 	        cout << "c：" << c_int << endl;
 	        cout << "pred：" ;
 	        for(k=binary_dim-1; k>=0; k--)
@@ -422,7 +409,7 @@ void RNN::train(int flavortype, int data_size, int batch_size)
 	        for(k=binary_dim-1; k>=0; k--)
 	            out += predict[k] * pow(2, k);
 	        
-	        cout << a_int << " -- " << b_int << " -- " << out << endl;
+	        cout << a_int << " -- " << out << endl;
 	        
 
 	    }
@@ -431,265 +418,117 @@ void RNN::train(int flavortype, int data_size, int batch_size)
     
     
     printf("\n*******预测输出阶段*******\n");
-	//int rem1=(i2t_gap+1)%(batch_size+1);
+	for(l=i2t_gap; l<i2t_gap+i_gap; l++)
+	{
+		a_int=0;
+		c_int=0;
+		e=0.0;
+
+	   //保存每次生成的预测值
+		memset(predict, 0, sizeof(predict));
 	
-				l=data_size-batch_size;
-				a_int=0;
-				b_int=0;
-				c_int=0;
-                e=0.0;
-               //保存每次生成的预测值
-				memset(predict, 0, sizeof(predict));
-				
-				for(int m=0; m<batch_size+1; m++)
-				a_int += flavornum_day[l+m-batch_size-1][flavortype];  //输入-3, -2, -1 的数据
-				
-				int2binary(a_int, a);                 //转为二进制数
-				
-				for(int m=0; m<batch_size+1; m++)
-				b_int += flavornum_day[l+m][flavortype];  //输入-2,-1,0 的数据
-				
-				int2binary(b_int, b);                 //转为二进制数
-				
+		a_int = l;  //输入-3, -2, -1 的数据
+	
+		int2binary(a_int, a);                 //转为二进制数
+	
+		c_int = flavornum_day[l][flavortype];            //输入-1, 0, 1的数据
 
-				//printf("%d\n", l);
-					//printf("ss");		
-			//在0时刻是没有之前的隐含层的，所以初始化一个全为0的
-		    double *S = new double[hidenode];     //状态值
-		    double *h = new double[hidenode];     //输出值
+		int2binary(c_int, c);                 //转为二进制数
+		
+		//在0时刻是没有之前的隐含层的，所以初始化一个全为0的
+		double *S = new double[hidenode];     //状态值
+		double *h = new double[hidenode];     //输出值
 
-		    for(i=0; i<hidenode; i++)  
-		    {
-		        S[i] = 0;
-		        h[i] = 0;
-		    }
-		    S_vector.push_back(S);
-		    h_vector.push_back(h); 
-		    //printf("ss");
-		    //正向传播
-		    for(p=0; p<binary_dim; p++)           //循环遍历二进制数组，从最低位开始
-		    {
-		        x[0] = a[p];
-		        x[1] = b[p];
-		        double t = (double)c[p];          //实际值
-		        double *in_gate = new double[hidenode];     //输入门
-		        double *out_gate = new double[hidenode];    //输出门
-		        double *forget_gate = new double[hidenode]; //遗忘门
-		        double *g_gate = new double[hidenode];      //新记忆
-		        double *state = new double[hidenode];       //状态值
-		        double *h = new double[hidenode];           //隐层输出值
-		        for(j=0; j<hidenode; j++)
-		        {   
-		            //输入层转播到隐层
-		            double inGate = 0.0;
-		            double outGate = 0.0;
-		            double forgetGate = 0.0;
-		            double gGate = 0.0;
-		            //double s = 0.0;
+		for(i=0; i<hidenode; i++)  
+		{
+		    S[i] = 0;
+		    h[i] = 0;
+		}
+		S_vector.push_back(S);
+		h_vector.push_back(h); 
+		//printf("ss");
+		//正向传播
+		for(p=0; p<binary_dim; p++)           //循环遍历二进制数组，从最低位开始
+		{
+		    x[0] = a[p];
+		    double t = (double)c[p];          //实际值
+		    double *in_gate = new double[hidenode];     //输入门
+		    double *out_gate = new double[hidenode];    //输出门
+		    double *forget_gate = new double[hidenode]; //遗忘门
+		    double *g_gate = new double[hidenode];      //新记忆
+		    double *state = new double[hidenode];       //状态值
+		    double *h = new double[hidenode];           //隐层输出值
+		    for(j=0; j<hidenode; j++)
+		    {   
+		        //输入层转播到隐层
+		        double inGate = 0.0;
+		        double outGate = 0.0;
+		        double forgetGate = 0.0;
+		        double gGate = 0.0;
+		        //double s = 0.0;
 
-		            for(m=0; m<innode; m++) 
-		            {
-		                inGate += x[m] * W_I[m][j]; 
-		                outGate += x[m] * W_O[m][j];
-		                forgetGate += x[m] * W_F[m][j];
-		                gGate += x[m] * W_G[m][j];
-		                //printf("%f\n", x[m]);
-		            }
-
-		            double *h_pre = h_vector.back();
-		            double *state_pre = S_vector.back();
-		            for(m=0; m<hidenode; m++)
-		            {
-		                inGate += h_pre[m] * U_I[m][j];
-		                outGate += h_pre[m] * U_O[m][j];
-		                forgetGate += h_pre[m] * U_F[m][j];
-		                gGate += h_pre[m] * U_G[m][j];
-		            }
-
-		            in_gate[j] = sigmoid(inGate);   
-		            out_gate[j] = sigmoid(outGate);
-		            forget_gate[j] = sigmoid(forgetGate);
-		            g_gate[j] = sigmoid(gGate);
-
-		            double s_pre = state_pre[j];
-		            state[j] = forget_gate[j] * s_pre + g_gate[j] * in_gate[j];
-		            h[j] = in_gate[j] * tanh(state[j]);
-		        }
-
-
-		        for(k=0; k<outnode; k++)
+		        for(m=0; m<innode; m++) 
 		        {
-		            //隐藏层传播到输出层
-		            double out = 0.0;
-		            for(j=0; j<hidenode; j++)
-		                out += h[j] * W_out[j][k];              
-		            y[k] = sigmoid(out);               //输出层各单元输出
+		            inGate += x[m] * W_I[m][j]; 
+		            outGate += x[m] * W_O[m][j];
+		            forgetGate += x[m] * W_F[m][j];
+		            gGate += x[m] * W_G[m][j];
+		            //printf("%f\n", x[m]);
 		        }
 
+		        double *h_pre = h_vector.back();
+		        double *state_pre = S_vector.back();
+		        for(m=0; m<hidenode; m++)
+		        {
+		            inGate += h_pre[m] * U_I[m][j];
+		            outGate += h_pre[m] * U_O[m][j];
+		            forgetGate += h_pre[m] * U_F[m][j];
+		            gGate += h_pre[m] * U_G[m][j];
+		        }
 
-		        predict[p] = (int)floor(y[0] + 0.5);   //记录预测值
+		        in_gate[j] = sigmoid(inGate);   
+		        out_gate[j] = sigmoid(outGate);
+		        forget_gate[j] = sigmoid(forgetGate);
+		        g_gate[j] = sigmoid(gGate);
 
-		        //保存隐藏层，以便下次计算
-		        I_vector.push_back(in_gate);
-		        F_vector.push_back(forget_gate);
-		        O_vector.push_back(out_gate);
-		        S_vector.push_back(state);
-		        G_vector.push_back(g_gate);
-		        h_vector.push_back(h);
-
-		        //保存标准误差关于输出层的偏导
-		        y_delta.push_back( (t - y[0]) * dsigmoid(y[0]) );
-		        e += fabs(t - y[0]);          //误差
-		        
+		        double s_pre = state_pre[j];
+		        state[j] = forget_gate[j] * s_pre + g_gate[j] * in_gate[j];
+		        h[j] = in_gate[j] * tanh(state[j]);
+		    
 		    }
-		     int q=0;
-		    for(k=binary_dim-1; k>=0; k--)
-	        q += predict[k] * pow(2, k);
-	    	cout << a_int << " -- " << b_int << " -- " << q << endl;
-			flavor[flavortype][0]=q;
-    
-    
-    
-    
-    
-    
-    
-    //预测输出
-//    printf("\n*******预测输出阶段*******\n");
-//    int i2t_gap=get_time_gap(t_time_stamp[0], predict_daystamp[1] ); //计算预测结束时间与train文件第一天的间隔
-//    int q;
-//    for(l=data_size-batch_size; l<i2t_gap+2-batch_size; l++)
-//			{
-//				a_int=0;
-//				b_int=0;
-//				c_int=0;
-//                e=0.0;
-//               //保存每次生成的预测值
-//				memset(predict, 0, sizeof(predict));
-//				
-//				for(m=0; m<batch_size; m++)
-//				a_int += flavornum_day[l-1+m][flavortype];  //输入-3, -2, -1 的数据
-//				a_int=10;
-//				int2binary(a_int, a);                 //转为二进制数
-//		
-//				for(m=0; m<batch_size; m++)
-//				b_int += flavornum_day[l+m][flavortype];  //输入-2,-1,0 的数据
-//				b_int=10;
-//				int2binary(b_int, b);                 //转为二进制数
-//				
-//				for(int m=0; m<batch_size; m++)
-//				c_int += flavornum_day[l+m][flavortype];            //输入-1, 0, 1的数据
-//				
-//				int2binary(c_int, c);                 //转为二进制数
-
-//				//printf("%d\n", l);
-//					//printf("ss");		
-//			//在0时刻是没有之前的隐含层的，所以初始化一个全为0的
-//		    double *S = new double[hidenode];     //状态值
-//		    double *h = new double[hidenode];     //输出值
-
-//		    for(i=0; i<hidenode; i++)  
-//		    {
-//		        S[i] = 0;
-//		        h[i] = 0;
-//		    }
-//		    S_vector.push_back(S);
-//		    h_vector.push_back(h); 
-//		    //printf("ss");
-//		    //正向传播
-//		    for(p=0; p<binary_dim; p++)           //循环遍历二进制数组，从最低位开始
-//		    {
-//		        x[0] = a[p];
-//		        x[1] = b[p];
-//		        double t = (double)c[p];          //实际值
-//		        double *in_gate = new double[hidenode];     //输入门
-//		        double *out_gate = new double[hidenode];    //输出门
-//		        double *forget_gate = new double[hidenode]; //遗忘门
-//		        double *g_gate = new double[hidenode];      //新记忆
-//		        double *state = new double[hidenode];       //状态值
-//		        double *h = new double[hidenode];           //隐层输出值
-//		        for(j=0; j<hidenode; j++)
-//		        {   
-//		            //输入层转播到隐层
-//		            double inGate = 0.0;
-//		            double outGate = 0.0;
-//		            double forgetGate = 0.0;
-//		            double gGate = 0.0;
-//		            //double s = 0.0;
-
-//		            for(m=0; m<innode; m++) 
-//		            {
-//		                inGate += x[m] * W_I[m][j]; 
-//		                outGate += x[m] * W_O[m][j];
-//		                forgetGate += x[m] * W_F[m][j];
-//		                gGate += x[m] * W_G[m][j];
-//		                //printf("%f\n", x[m]);
-//		            }
-
-//		            double *h_pre = h_vector.back();
-//		            double *state_pre = S_vector.back();
-//		            for(m=0; m<hidenode; m++)
-//		            {
-//		                inGate += h_pre[m] * U_I[m][j];
-//		                outGate += h_pre[m] * U_O[m][j];
-//		                forgetGate += h_pre[m] * U_F[m][j];
-//		                gGate += h_pre[m] * U_G[m][j];
-//		            }
-
-//		            in_gate[j] = sigmoid(inGate);   
-//		            out_gate[j] = sigmoid(outGate);
-//		            forget_gate[j] = sigmoid(forgetGate);
-//		            g_gate[j] = sigmoid(gGate);
-
-//		            double s_pre = state_pre[j];
-//		            state[j] = forget_gate[j] * s_pre + g_gate[j] * in_gate[j];
-//		            h[j] = in_gate[j] * tanh(state[j]);
-//		        }
 
 
-//		        for(k=0; k<outnode; k++)
-//		        {
-//		            //隐藏层传播到输出层
-//		            double out = 0.0;
-//		            for(j=0; j<hidenode; j++)
-//		                out += h[j] * W_out[j][k];              
-//		            y[k] = sigmoid(out);               //输出层各单元输出
-//		        }
+		    for(k=0; k<outnode; k++)
+		    {
+		        //隐藏层传播到输出层
+		        double out = 0.0;
+		        for(j=0; j<hidenode; j++)
+		            out += h[j] * W_out[j][k];              
+		        y[k] = sigmoid(out);               //输出层各单元输出
+		    }
 
 
-//		        predict[p] = (int)floor(y[0] + 0.5);   //记录预测值
+		    predict[p] = (int)floor(y[0] + 0.5);   //记录预测值
 
-//		        //保存隐藏层，以便下次计算
-//		        I_vector.push_back(in_gate);
-//		        F_vector.push_back(forget_gate);
-//		        O_vector.push_back(out_gate);
-//		        S_vector.push_back(state);
-//		        G_vector.push_back(g_gate);
-//		        h_vector.push_back(h);
+		    //保存隐藏层，以便下次计算
+		    I_vector.push_back(in_gate);
+		    F_vector.push_back(forget_gate);
+		    O_vector.push_back(out_gate);
+		    S_vector.push_back(state);
+		    G_vector.push_back(g_gate);
+		    h_vector.push_back(h);
 
-//		        //保存标准误差关于输出层的偏导
-//		        y_delta.push_back( (t - y[0]) * dsigmoid(y[0]) );
-//		        e += fabs(t - y[0]);          //误差
-//		        
-//		    }
-
-//		    for(k=binary_dim-1; k>=0; k--)
-//	        q += predict[k] * pow(2, k);
-//	    	cout << a_int << " -- " << b_int << " -- " << q << endl;
-//	    	flavornum_day[l+batch_size][flavortype]=q-b_int+flavornum_day[l][flavortype];
-//		if(flavornum_day[l+batch_size][flavortype]<0)
-//			flavornum_day[l+batch_size][flavortype]=0;
-//		printf("%d\n", flavornum_day[l][flavortype]);
-//		printf("%d\n", flavornum_day[l+batch_size][flavortype]); 
-//	    	q=0;
-//    }
-    
-    
-    
-    
-//    int predict_out;
-//  	predict_out=train_output(flavortype, data_size, batch_size);
-//  	printf("%d\n", predict_out);
+		    //保存标准误差关于输出层的偏导
+		    y_delta.push_back( (t - y[0]) * dsigmoid(y[0]) );
+		    e += fabs(t - y[0]);          //误差
+		    
+		}
+		int q=0;
+		for(k=binary_dim-1; k>=0; k--)
+			q += predict[k] * pow(2, k);
+		cout << a_int << " -- " << q << endl;
+		flavor[flavortype][0]+=q;
+    }
 }
 
 int RNN::train_output(int flavortype, int data_size, int batch_size)
@@ -837,3 +676,4 @@ int lstm(int flavortype,int data_size, int batch_size)
     //rnn.train_output(flavortype-1, data_size, batch_size);
     return 0;
 }
+
