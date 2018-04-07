@@ -52,16 +52,16 @@ void predict_server(char * info[MAX_INFO_NUM], char * data[MAX_DATA_NUM], int da
 	
 	//average( t_flavor_num, i_flavor, flavor, i_flavorN, data_num);//平均数预测
 	
-	//least_square_mul(i_flavorN); //曲线+平均数预测
-	for(unsigned int f=0; f<i_flavorN; f++)
-	lstm(predict_flavor[7], t_gap, i_gap);
+	least_square_mul(i_flavorN); //曲线+平均数预测
+	//for(unsigned int f=0; f<i_flavorN; f++)
+	//	lstm(predict_flavor[7], t_gap, i_gap);
 	
 	for(unsigned int i=0; i<N; i++)
     {	
 		printf("预测虚拟机flavor%d的个数为%d\n",i+1,flavor[i][0]);
 	}
 	printf("\n*************需要预测虚拟机***************\n");
-		for(unsigned int i=0; i<i_flavorN;i++)
+	for(unsigned int i=0; i<i_flavorN;i++)
 	{
 		printf("flavor%d\n",predict_flavor[i]);
 	}
