@@ -55,6 +55,7 @@ void predict_server(char * info[MAX_INFO_NUM], char * data[MAX_DATA_NUM], int da
 	//least_square_mul(i_flavorN); //曲线+平均数预测
 	for(unsigned int f=0; f<i_flavorN; f++)
 		lstm(predict_flavor[f], t_gap, i_gap);
+
 	
 	for(unsigned int i=0; i<N; i++)
     {	

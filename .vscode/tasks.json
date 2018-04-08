@@ -12,10 +12,10 @@
                 "-Wall",
                 "${workspaceRoot}/ecs.cpp",
                 "-I",
-                "${workspaceRoot}/lib"
-                // "${workspaceRoot}/data_2015_12.txt",
-                // "${workspaceRoot}/input.txt",
-                // "${workspaceRoot}/output.txt"
+                "${workspaceRoot}/lib",
+                "${workspaceRoot}/train.txt",
+                "${workspaceRoot}/input.txt",
+                "${workspaceRoot}/output.txt"
             ],
             "group": {
                 "kind": "build",

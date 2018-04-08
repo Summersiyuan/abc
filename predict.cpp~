@@ -52,9 +52,15 @@ void predict_server(char * info[MAX_INFO_NUM], char * data[MAX_DATA_NUM], int da
 	
 	//average( t_flavor_num, i_flavor, flavor, i_flavorN, data_num);//平均数预测
 	
+<<<<<<< HEAD
 	//least_square_mul(i_flavorN); //曲线+平均数预测
 	for(unsigned int f=0; f<i_flavorN; f++)
 		lstm(predict_flavor[f], t_gap, i_gap);
+=======
+	least_square_mul(i_flavorN); //曲线+平均数预测
+	//for(unsigned int f=0; f<i_flavorN; f++)
+	//	lstm(predict_flavor[7], t_gap, i_gap);
+>>>>>>> 9aa662bdea362b4626fcb021ba3480c2fc125db6
 	
 	for(unsigned int i=0; i<N; i++)
     {	

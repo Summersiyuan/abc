@@ -263,16 +263,8 @@
      int gap_temp=get_time_gap(t_time_stamp[0], predict_daystamp[0] ); //计算预测开始时间与train文件第一天的间隔
      
      //printf("%d\n",gap_temp);
-     
- /*    for (int i = gap_temp; i < gap_temp+i_gap ; i++)
-     	{
-     		flavor[predict_flavor[flavor_type]-1][0]+= (int) ParaK[3]+ParaK[2]*BufferX[i]+\
-     		ParaK[1]*pow(BufferX[i],2)+ParaK[0]*pow(BufferX[i],3);
-     	}
-*/
      for (int i = gap_temp; i < gap_temp+i_gap ; i++)//最小二乘法得到曲线方程求值
 	 {
-
      	flavor[predict_flavor[flavor_type]-1][0]+= (int) ParaK[2]+ParaK[1]*BufferX[i]+\
      	ParaK[0]*pow(BufferX[i],2);
 
@@ -295,8 +287,8 @@
      	average_flavor=(double)flavor_temp[predict_flavor[flavor_type]-1]/(t_gap+1);//求train文件内对应虚拟机的每天平均使用数量
 		flavor[predict_flavor[flavor_type]-1][0]=average_flavor*(i_gap+1);
      }
-     
-		
+     //if(predict_flavor[flavor_type]==14||predict_flavor[flavor_type]==11||predict_flavor[flavor_type]==16)
+		//flavor[predict_flavor[flavor_type]-1][0]=0;
      
      FinishTime = clock();  //  结束计时  
      DiffTime = FinishTime - StartTime; //拟合时间  
