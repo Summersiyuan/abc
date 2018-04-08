@@ -195,7 +195,7 @@
      double DiffTime;  
      StartTime = clock();       //  开始计时  
 
-     double BufferX[MAX_TRAIN_DAYS],  ParaK[3]; //  5次拟合, 一共6个系数(包含常数项)  
+     double BufferX[MAX_TRAIN_DAYS],  ParaK[10]; //  5次拟合, 一共6个系数(包含常数项)  
 
 
 #ifdef LEAST_KALMAN //最小二乘法加滤波
@@ -273,13 +273,16 @@
      for (int i = gap_temp; i < gap_temp+i_gap ; i++)//最小二乘法得到曲线方程求值
 	 {
 
-     	flavor[predict_flavor[flavor_type]-1][0]+= (int) ParaK[2]+ParaK[1]*BufferX[i]+\
-     	ParaK[0]*pow(BufferX[i],2);
+//     	flavor[predict_flavor[flavor_type]-1][0]+= (int) ParaK[2]+ParaK[1]*BufferX[i]+\
+//     	ParaK[0]*pow(BufferX[i],2);
+     	flavor[predict_flavor[flavor_type]-1][0]+= (int) ParaK[6]+ParaK[5]*BufferX[i]+\
+     	ParaK[4]*pow(BufferX[i],2)+ParaK[3]*pow(BufferX[i],3)+ParaK[2]*pow(BufferX[i],4)+\
+     	ParaK[1]*pow(BufferX[i],5)+ParaK[0]*pow(BufferX[i],6);
      }
      
      
      double flavor_temp[N]={0}, average_flavor=0.0;
-     if(flavor[predict_flavor[flavor_type]-1][0]<0)  //处理拟合得到的赋值,当拟合得到的值为赋值时采用平均值
+     if(flavor[predict_flavor[flavor_type]-1][0]<0||(predict_flavor[flavor_type]-1)==12||(predict_flavor[flavor_type]-1)==14)  //处理拟合得到的赋值,当拟合得到的值为赋值时采用平均值
      {
      	
 		for(unsigned int i=0;i<N;i++)

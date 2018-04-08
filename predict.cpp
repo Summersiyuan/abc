@@ -54,20 +54,18 @@ void predict_server(char * info[MAX_INFO_NUM], char * data[MAX_DATA_NUM], int da
 	
 	//least_square_mul(i_flavorN); //曲线+平均数预测
 	for(unsigned int f=0; f<i_flavorN; f++)
-	lstm(predict_flavor[f], t_gap, i_gap);
+		lstm(predict_flavor[f], t_gap, i_gap);
 	
 	for(unsigned int i=0; i<N; i++)
     {	
 		printf("预测虚拟机flavor%d的个数为%d\n",i+1,flavor[i][0]);
 	}
 	printf("\n*************需要预测虚拟机***************\n");
-		for(unsigned int i=0; i<i_flavorN;i++)
+	for(unsigned int i=0; i<i_flavorN;i++)
 	{
 		printf("flavor%d\n",predict_flavor[i]);
 	}
 	
-	//printf("%d\n",type_opti);
-	//printf("%s\n",filename);
 	int flavor_i[N][3]={0};
 	memcpy(flavor_i, flavor, sizeof(flavor));
 	put(core_num, RAM, flavor_i, type_opti); //放置虚拟机任务函数
@@ -85,7 +83,6 @@ void predict_server(char * info[MAX_INFO_NUM], char * data[MAX_DATA_NUM], int da
 	//char result_file[] = "18\n\n0 8 0 20";
 	unsigned int k,j=0;//计算输出文件行数
 	k=4+i_flavorN+number_server;
-	//printf("%d\n",k);
 	int z=0;
 	char buff_line[k*MAX_LINE_LEN]; //输入文件信息流
 	
@@ -94,7 +91,6 @@ void predict_server(char * info[MAX_INFO_NUM], char * data[MAX_DATA_NUM], int da
 	{
 		if(i==0)
 		{
-			
 			z+=sprintf(buff_line, "%d\n", sum_flavor );
 			//*buff_line= *result_file[0];
 		}

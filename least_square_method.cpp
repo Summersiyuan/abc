@@ -275,11 +275,12 @@
 
      	flavor[predict_flavor[flavor_type]-1][0]+= (int) ParaK[2]+ParaK[1]*BufferX[i]+\
      	ParaK[0]*pow(BufferX[i],2);
+
      }
      
      
      double flavor_temp[N]={0}, average_flavor=0.0;
-     if(flavor[predict_flavor[flavor_type]-1][0]<0)  //处理拟合得到的赋值,当拟合得到的值为赋值时采用平均值
+     if(flavor[predict_flavor[flavor_type]-1][0]<0||(predict_flavor[flavor_type]-1)==12||(predict_flavor[flavor_type]-1)==14)  //处理拟合得到的赋值,当拟合得到的值为赋值时采用平均值
      {
      	
 		for(unsigned int i=0;i<N;i++)
